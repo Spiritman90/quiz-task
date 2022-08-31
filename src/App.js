@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import QuizTest from "./components/QuizTest";
+import QuizTest1 from "./components/QuizTest1";
+import Timer from "./components/Timer";
+// import QuizContextProvider from "./quizContext/quizContext";
+
+// import QuizTest2 from "./components/QuizTest2";
+// import QuizTest3 from "./components/QuizTest3";
+// import QuizTest4 from "./components/QuizTest4";
+// import QuizTest5 from "./components/QuizTest5";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Timer />
+      <Routes>
+        <Route path='/' element={<QuizTest />} />
+        <Route path='/quiz-test/:id' element={<QuizTest1 />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
