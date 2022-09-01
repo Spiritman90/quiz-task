@@ -23,6 +23,8 @@ code {
   background-color: #c69963;
   padding: 1.5rem;
   text-align: center;
+  font-weight: 700;
+  font-size: 2rem;
 }
 
 form {

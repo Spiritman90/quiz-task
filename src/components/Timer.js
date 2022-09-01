@@ -31,12 +31,12 @@ const Timer = () => {
 
   return (
     <div>
-      <h1 className='counter'>
+      <h3 className='counter'>
         You have{" "}
         <span>
-          {Math.floor(time / 60)}: {time % 60} to complete quiz
+          {Math.floor(time / 60)}: {time % 60} to complete quiz once you start
         </span>
-      </h1>
+      </h3>
     </div>
   );
 };
