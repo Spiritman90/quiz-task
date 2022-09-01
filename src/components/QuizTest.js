@@ -1,29 +1,64 @@
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import { Link } from "react-router-dom";
-import { questions } from "./data";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router";
+import { QuizContext, initialUserState } from "../quizContext/quizContext";
+import Result from "./Result";
 
 const QuizTest = () => {
-  const [fullName, setFullName] = useState("");
+  const {
+    setStartCount,
+    fullName,
+    changeHandler,
+    showResult,
+    setFullName,
+    setShowResult,
+  } = useContext(QuizContext);
+  const navigate = useNavigate();
 
-  console.log(fullName);
-  // const navigate = useNavigate();
-  // const { id } = useParams();
+  const submitHandler = (e) => {
+    e.preventDefault();
+    setStartCount((prev) => !prev);
+    navigate("/quiz-test/1");
+  };
+
+  const resetResultHandler = () => {
+    setFullName(initialUserState);
+    setShowResult(false);
+  };
 
   return (
     <div>
-      <form>
+      <form autoComplete='off' onSubmit={submitHandler}>
         <label>
           <input
+            required
             type='text'
             className='name-input'
-            placeholder='Full name'
-            onChange={(e) => setFullName(e.target.value)}
-            value={fullName}
+            placeholder='First name'
+            name='firstName'
+            onChange={changeHandler}
+            value={fullName.firstName}
           />
         </label>
-        <Link to='/quiz-test/1'>Start</Link>
+        <label>
+          <input
+            required
+            type='text'
+            className='name-input'
+            placeholder='Last name'
+            name='lastName'
+            onChange={changeHandler}
+            value={fullName.lastName}
+          />
+        </label>
+        {showResult ? (
+          <button onClick={resetResultHandler} type='button'>
+            Reset
+          </button>
+        ) : (
+          <button type='submit'>Start</button>
+        )}
       </form>
+      {showResult && <Result />}
     </div>
   );
 };

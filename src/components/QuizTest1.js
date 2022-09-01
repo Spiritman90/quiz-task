@@ -1,49 +1,82 @@
-import React, { useState, useRef } from "react";
-import { questions } from "./data";
-import { Link } from "react-router-dom";
-import { useNavigate, useParams } from "react-router";
+import React, { useContext } from "react";
+import { Navigate, useNavigate, useParams } from "react-router";
+import { QuizContext } from "../quizContext/quizContext";
 
 const QuizTest1 = () => {
   const { id } = useParams();
 
-  const [questionNumber, setQuestionNumber] = useState(1);
-  const [correctAnswer, setCorrectAnswer] = useState("");
-  const [choice, setChoice] = useState("");
+  const {
+    data,
+    responseHandler,
+    startCount,
+    setStartCount,
+    response,
+    setShowResult,
+  } = useContext(QuizContext);
+  const navigate = useNavigate();
 
-  const selectedOption = useRef();
-
-  const currentQuestion = questions.filter((question) => {
-    return question.id === Number(id);
+  const [currentQuestion] = data.filter((question) => {
+    return question.id.toString() === id.toString();
+  });
+  const [{ userchoice }] = response.filter((question) => {
+    return question.id.toString() === id.toString();
   });
 
-  const handleChange = (e) => {
-    setChoice(e.target.value);
-    console.log(choice);
+  const nextHandler = () => {
+    navigate(`/quiz-test/${parseInt(id) + 1}`);
+  };
+  const prevHandler = () => {
+    navigate(`/quiz-test/${parseInt(id) - 1}`);
   };
 
-  console.log(currentQuestion);
+  const submitHandler = () => {
+    setStartCount((prev) => !prev);
+    setShowResult(true);
+  };
+
+  const choices = currentQuestion.choices;
+
+  if (startCount === false) {
+    return <Navigate replace to='/' />;
+  }
+
   return (
-    <div>
-      <h1>Question: {currentQuestion[0]?.id}</h1>
-      <p>{currentQuestion[0]?.question}</p>
+    <div className='questions'>
+      <h1>Question: {currentQuestion.id}</h1>
+      <p>{currentQuestion.question}</p>
       <p>Options:</p>
-      <ul>
-        {currentQuestion &&
-          Object.entries(currentQuestion[0]?.choices).map((choice) => (
-            <li key={choice}>
-              {" "}
-              <span>{choice[0]}</span>: {choice[1]}
-              <input type='checkbox' onChange={handleChange} />
-            </li>
-          ))}
-      </ul>
-      <Link
-        to={`/quiz-test/${
-          Number(id) > questions.length ? 1 : questionNumber + Number(id)
-        }`}
-      >
-        Next
-      </Link>
+
+      {Object.keys(choices).map((key) => (
+        <label key={key} htmlFor={`${choices[key]}`}>
+          <span>{key}</span>: {choices[key]}
+          <input
+            type='radio'
+            id={`${choices[key]}`}
+            checked={userchoice === key}
+            value={key}
+            name={currentQuestion.id}
+            onChange={responseHandler}
+          />
+        </label>
+      ))}
+      <button disabled={id === "1"} onClick={prevHandler}>
+        prev
+      </button>
+      {parseInt(id) < 5 ? (
+        <button disabled={id === "5"} onClick={nextHandler}>
+          next
+        </button>
+      ) : null}
+      {parseInt(id) === 5 ? (
+        <button
+          disabled={
+            response.filter((res) => res.userchoice === "").lenght === 0
+          }
+          onClick={submitHandler}
+        >
+          Submit
+        </button>
+      ) : null}
     </div>
   );
 };
